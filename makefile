@@ -1,4 +1,3 @@
-CC = arm-linux-gnueabihf-gcc
 host: CC = gcc
 bbb:  CC = arm-linux-gnueabihf-gcc
 frdm: CC = arm-none-eabi-gcc
@@ -20,19 +19,7 @@ OBJSS = $(STARTUP:.S=.o)
 LIBOBJS = $(LIBS:.c=.o)
 PREOBJS = $(SRCS:.c=.i)
 ASMOBJS = $(SRCS:.c=.S)
-OUTPUT = proj
-
-#arm-none-eabi-gcc -mcpu=cortex-m0plus -mthumb -O0 -fmessage-length=0 -fsigned-char
-#-ffunction-sections -fdata-sections  -g3 -x assembler-with-cpp -MMD -MP -MF"$(@:%.o=%.d)"
-# -MT"$@" -c -o "$@" "$<"
-
-#arm-none-eabi-g++ -mcpu=cortex-m0plus -mthumb -O0 -fmessage-length=0 -fsigned-char
-#-ffunction-sections -fdata-sections  -g3 -T "MKL25Z128xxx4_flash.ld" -Xlinker
-#--gc-sections -L"/home/tyler/workspace.kds/HelloWorld/Project_Settings/Linker_Files"
-#-Wl,-Map,"HelloWorld.map" -specs=nano.specs -specs=nosys.specs -o "HelloWorld.elf"
-#$(OBJS) $(USER_OBJS) $(LIBS)
-
-
+OUTPUT = TwoWheelRobot
 
 .PHONY: size host bbb frdm preprocess asm-file compile-all build clean build-lib %.o %.i %.S
 
@@ -43,7 +30,6 @@ host: $(OBJS)
 bbb:
 	$(CC) $(CFLAGS) $(BBBSRCS) $(INCLUDES) -o $(OUTPUT)bbb $(LDFLAGS) $(DEFINES)
 	$(SZ) $(OUTPUT)bbb
-
 
 frdm:
 	$(CC) $(CFLAGS) $(FRDMSRCS) $(STARTUP) $(INCLUDES) -o $(OUTPUT)frdm.elf $(LDFLAGS) $(DEFINES) -DFRDM

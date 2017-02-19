@@ -26,9 +26,9 @@ The size of the executable will be outputed after the specified build target is 
 building.
 
 The make file will output an executable as follows:
-host: proj
-bbb: pro1bbb
-frdm: projfrdm.elf
+host: TwoWheelRobot
+bbb: TwoWheelRobotbbb
+frdm: TwoWheelRobotfrdm.elf
 
 To run testing run the make file as follows:
 	make target DEFINES=-DTEST
