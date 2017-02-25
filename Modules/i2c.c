@@ -1,6 +1,6 @@
 #include "i2c.h"
 
-I2C_Error I2C_Init( uint8 I2C_Channel, uint8 I2C_DesiredSpeedkHz )
+I2C_Error I2C_Init( uint8_t I2C_Channel, uint8_t I2C_DesiredSpeedkHz )
 {
    // Enable port b
    SET_BIT_IN_REG( SIM_SCGC5, SIM_SCGC5_PORTB_MASK );
@@ -40,7 +40,7 @@ I2C_Error I2C_SendData( uint8_t * data, uint8_t numBytes, uint8_t address )
 {
    // Start with blocking, then move to interrupt driven.
    // Write: control register 1 to enable TX
-   SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK )
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
    // Write: Address with LSB = 0
    I2C0_D = address;
    // Wait for transfer complete flag
@@ -59,20 +59,23 @@ I2C_Error I2C_SendData( uint8_t * data, uint8_t numBytes, uint8_t address )
    return I2C_NoError;
 }
 
-I2C_Error I2C_ReadData( uint8_t * data, uint8_t numBytes, uint8_t address )
+I2C_Error I2C_ReadData( uint8_t reg, uint8_t * data, uint8_t numBytes, uint8_t address )
 {
    // Write address with LSb = 0
-   SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK )
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
    // Write: Address with LSB = 0
    I2C0_D = address;
    // Wait for transfer complete flag
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
+   // Write register value to read
+   I2C0_D = reg;
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
    // Write address with LSb = 1
-   I2C0_D = address;
+   I2C0_D = address | 1;
    // Wait for transfer complete flag
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
    // Write control register to switch to RX
-   CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TX_MASK )
+   CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
    // ****************BLOCKING PORTIONS*******************
    for( size_t i = 0; i < numBytes; i++ )
    {

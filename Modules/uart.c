@@ -32,7 +32,6 @@ void UartSetup( uint8_t channel, uint32_t requestedBuadRate, uint8_t parity )
    uint32_t vdiv = 0;
    parseDiag = 0;
 
-
    // Determining msgCLK
    prdiv = ((MCG_C5 & MCG_C5_PRDIV0_MASK) + 1);
    vdiv = ((MCG_C6 & MCG_C6_VDIV0_MASK) + 24);
@@ -245,10 +244,10 @@ void UART0_IRQHandler( )
       data = UART0_D;
       if( CBufferAdd( UART0_RXBuffer, &data, DMACH_UART0RX ) == BUFFER_FULL )
       {
-
+         //LOG0( "Buffer Is FULL during RX\n" );
       }
-      //PutChar( data );
-      /*if( data == LF || data == CR )
+      PutChar( data );
+      if( data == LF || data == CR )
       {
          data = '\0';
          if( CBufferAdd( UART0_RXBuffer, &data, DMACH_UART0RX ) == BUFFER_FULL )
@@ -256,7 +255,7 @@ void UART0_IRQHandler( )
             //LOG0( "Buffer Is FULL during RX\n" );
          }
          parseDiag = 1;
-      }*/
+      }
    }
 }
 

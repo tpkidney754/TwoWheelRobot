@@ -2,8 +2,7 @@
 
 extern CircularBuffer_t * UART0_RXBuffer;
 extern CircularBuffer_t * UART0_TXBuffer;
-extern CircularBuffer_t * UART1_RXBuffer;
-extern CircularBuffer_t * UART1_TXBuffer;
+
 extern CircularBuffer_t * SPI_RXBuffer[ SPI_CHANNELS ];
 extern CircularBuffer_t * SPI_TXBuffer[ SPI_CHANNELS ];
 
@@ -11,22 +10,13 @@ int main()
 {
    UartSetup( 0, 57600, 0 );
 #ifdef FRDM
-   UartSetup( 1, 115200, 0 );
    LEDSetup();
-   InitDisplay( 0 );
-   InitDisplay( 1 );
-   ADC_Init( ADC_CHANNEL );
-   Button_Init( 0 );
-   Controller_Init( );
-   InitWaitTimer( );
-   SWC_Init( );
-   float temperature = 0;
-   temperature = ReadTemp( );
-   Controller_SetCurrentTemp( temperature );
+   // Will be using the ADC later on, just not now.
+   //ADC_Init( ADC_CHANNEL );
 #endif
 
 #ifdef TESTING
-   //Testing();
+   Testing();
 #endif
 
    uint8_t buffer[ 100 ];
@@ -36,55 +26,20 @@ int main()
    TemperatureData tempData;
 
 #ifdef FRDM
-while( 1 )
-{
-#ifndef TESTING
-   Controller_StateMachine( );
-   Controller_SetCurrentTemp( ReadTemp( ) );
-#endif //TESTING
-   if( UART1_RXBuffer->numItems == COMMAND_MSG_BYTES )
+   while( 1 )
    {
-      CBufferRemove( UART1_RXBuffer, &cmdmsg.cmd, DMACH_UART1RX  );
-      CBufferRemove( UART1_RXBuffer, &cmdmsg.data, DMACH_UART1RX );
-      CBufferRemove( UART1_RXBuffer, &cmdmsg.checksum, DMACH_UART1RX );
+      if( parseDiag )
+      {
+         length = UART0_RXBuffer->numItems;
+         for( size_t i = 0; i < length; i++ )
+         {
+            CBufferRemove( UART0_RXBuffer, buffer, DMACH_UART0TX );
+         }
 
-      DecodeCommandMessage( &cmdmsg );
+         ParseDiag( buffer );
+      }
 
-      parseDiag = 0;
-   }
-
-#else
-#ifdef TESTING
-while( 1 )
-{
-   printf( "Enter command: " );
-#else
-{
-#endif
-   fgets( buffer, 100, stdin );
-   length = MyStrLen( buffer );
-   if( strstr( buffer, "read temp" ) )
-   {
-      readTempData = 1;
-   }
-
-   ParseDiag( buffer );
-
-   if( readTempData )
-   {
-      for( int32_t i = 0; i < 100000; i++ );
-      while( UartRX( ( uint8_t * ) &tempData.data ) <= 0 );
-
-      printf( "%d,%d,%d,%s",
-               tempData.msg.currentTemp,
-               tempData.msg.currentDesired,
-               tempData.msg.currentRange,
-               tempData.msg.powerOn ? "ON" : "OFF" );
-
-      readTempData = 0;
    }
 #endif
-}
-
-return 0;
+   return 0;
 }

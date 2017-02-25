@@ -42,19 +42,16 @@ FRDMSRCS = \
 	./Modules/dma.c \
 	./Modules/spi.c \
 	./Modules/nRF24L01.c \
+	./Modules/i2c.c \
+	./Modules/lsm9ds1.c \
 	./Modules/adc.c \
 	./Modules/pushbutton.c \
-	./Modules/singlewirecomms.c \
-	./Modules/ds18b20.c \
 	./Logging/uartlogging.c \
 	./Testing/testing.c \
 	./Testing/datatesting.c \
 	./Testing/memorytesting.c \
 	./Testing/circularbuffertesting.c \
 	./Testing/performancetesting.c \
-	./Messaging/messaging.c \
-	./Display/sevensegment.c \
-	./TemperatureController/controller.c \
 
 
 STARTUP = \

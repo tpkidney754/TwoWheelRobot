@@ -39,6 +39,8 @@
 #include "pushbutton.h"
 #include "singlewirecomms.h"
 #include "ds18b20.h"
+#include "i2c.h"
+#include "lsm9ds1.h"
 #include "controller.h"
 #endif
 

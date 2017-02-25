@@ -30,89 +30,89 @@
 /** Accelerometer/Gyroscope - Register Layout Typedef */
 typedef enum
 {
-   ACT_THS = 4,
-   ACT_DUR,
-   INT_GEN_CFG_XL,
-   INT_GEN_THS_X_XL,
-   INT_GEN_THS_Y_XL,
-   INT_GEN_THS_Z_XL,
-   INT_GEN_DUR_XL,
-   REFERENCE_G,
-   INT1_CTRL,
-   INT2_CTRL,
-   RESERVED0,
-   WHO_AM_I,
-   CTRL_REG1_G,
-   CTRL_REG2_G,
-   CTRL_REG3_G,
-   ORIENT_CFG_G,
-   INT_GEN_SRC_G,
-   OUT_TEMP_L,
-   OUT_TEMP_H,
-   STATUS_REG0,
-   OUT_X_L_G,
-   OUT_X_H_G,
-   OUT_Y_L_G,
-   OUT_Y_H_G,
-   OUT_Z_L_G,
-   OUT_Z_H_G,
-   CTRL_REG4,
-   CTRL_REG5_XL,
-   CTRL_REG6_XL,
-   CTRL_REG7_XL,
-   CTRL_REG8,
-   CTRL_REG9,
-   CTRL_REG10,
-   RESERVED1,
-   INT_GEN_SRC_XL,
-   STATUS_REG1,
-   OUT_X_L_XL,
-   OUT_X_H_XL,
-   OUT_Y_L_XL,
-   OUT_Y_H_XL,
-   OUT_Z_L_XL,
-   OUT_Z_H_XL,
-   FIFO_CTRL,
-   FIFO_SRC,
-   INT_GEN_CFG_G,
-   INT_GEN_THS_XH_G,
-   INT_GEN_THS_XL_G,
-   INT_GEN_THS_YH_G,
-   INT_GEN_THS_YL_G,
-   INT_GEN_THS_ZH_G,
-   INT_GEN_THS_ZL_G,
-   INT_GEN_DUR_G,
+   LSM9DS1_ACGY_ACT_THS = 4,
+   LSM9DS1_ACGY_ACT_DUR,
+   LSM9DS1_ACGY_INT_GEN_CFG_XL,
+   LSM9DS1_ACGY_INT_GEN_THS_X_XL,
+   LSM9DS1_ACGY_INT_GEN_THS_Y_XL,
+   LSM9DS1_ACGY_INT_GEN_THS_Z_XL,
+   LSM9DS1_ACGY_INT_GEN_DUR_XL,
+   LSM9DS1_ACGY_REFERENCE_G,
+   LSM9DS1_ACGY_INT1_CTRL,
+   LSM9DS1_ACGY_INT2_CTRL,
+   LSM9DS1_ACGY_RESERVED0,
+   LSM9DS1_ACGY_WHO_AM_I,
+   LSM9DS1_ACGY_CTRL_REG1_G,
+   LSM9DS1_ACGY_CTRL_REG2_G,
+   LSM9DS1_ACGY_CTRL_REG3_G,
+   LSM9DS1_ACGY_ORIENT_CFG_G,
+   LSM9DS1_ACGY_INT_GEN_SRC_G,
+   LSM9DS1_ACGY_OUT_TEMP_L,
+   LSM9DS1_ACGY_OUT_TEMP_H,
+   LSM9DS1_ACGY_STATUS_REG0,
+   LSM9DS1_ACGY_OUT_X_L_G,
+   LSM9DS1_ACGY_OUT_X_H_G,
+   LSM9DS1_ACGY_OUT_Y_L_G,
+   LSM9DS1_ACGY_OUT_Y_H_G,
+   LSM9DS1_ACGY_OUT_Z_L_G,
+   LSM9DS1_ACGY_OUT_Z_H_G,
+   LSM9DS1_ACGY_CTRL_REG4,
+   LSM9DS1_ACGY_CTRL_REG5_XL,
+   LSM9DS1_ACGY_CTRL_REG6_XL,
+   LSM9DS1_ACGY_CTRL_REG7_XL,
+   LSM9DS1_ACGY_CTRL_REG8,
+   LSM9DS1_ACGY_CTRL_REG9,
+   LSM9DS1_ACGY_CTRL_REG10,
+   LSM9DS1_ACGY_RESERVED1,
+   LSM9DS1_ACGY_INT_GEN_SRC_XL,
+   LSM9DS1_ACGY_STATUS_REG1,
+   LSM9DS1_ACGY_OUT_X_L_XL,
+   LSM9DS1_ACGY_OUT_X_H_XL,
+   LSM9DS1_ACGY_OUT_Y_L_XL,
+   LSM9DS1_ACGY_OUT_Y_H_XL,
+   LSM9DS1_ACGY_OUT_Z_L_XL,
+   LSM9DS1_ACGY_OUT_Z_H_XL,
+   LSM9DS1_ACGY_FIFO_CTRL,
+   LSM9DS1_ACGY_FIFO_SRC,
+   LSM9DS1_ACGY_INT_GEN_CFG_G,
+   LSM9DS1_ACGY_INT_GEN_THS_XH_G,
+   LSM9DS1_ACGY_INT_GEN_THS_XL_G,
+   LSM9DS1_ACGY_INT_GEN_THS_YH_G,
+   LSM9DS1_ACGY_INT_GEN_THS_YL_G,
+   LSM9DS1_ACGY_INT_GEN_THS_ZH_G,
+   LSM9DS1_ACGY_INT_GEN_THS_ZL_G,
+   LSM9DS1_ACGY_INT_GEN_DUR_G,
 } LSM9DS1_AccelGryoRegisters_e;
 
 typedef enum
 {
-   OFFSET_X_REG_L_M = 5,
-   OFFSET_X_REG_H_M,
-   OFFSET_Y_REG_L_M,
-   OFFSET_Y_REG_H_M,
-   OFFSET_Z_REG_L_M,
-   OFFSET_Z_REG_H_M,
-   RESERVED0,
-   WHO_AM_I,
-   RESERVED1,
-   CTRL_REG1_M,
-   CTRL_REG2_M,
-   CTRL_REG3_M,
-   CTRL_REG4_M,
-   CTRL_REG5_M,
-   RESERVED2,
-   STATUS_REG_M,
-   OUT_X_L_M,
-   OUT_X_H_M,
-   OUT_Y_L_M,
-   OUT_Y_H_M,
-   OUT_Z_L_M,
-   OUT_Z_H_M,
-   RESERVED3,
-   INT_CFG_M,
-   INT_SRC_M,
-   INT_THS_L_M,
-   INT_THS_H_M,
+   LSM9DS1_MAG_OFFSET_X_REG_L_M = 5,
+   LSM9DS1_MAG_OFFSET_X_REG_H_M,
+   LSM9DS1_MAG_OFFSET_Y_REG_L_M,
+   LSM9DS1_MAG_OFFSET_Y_REG_H_M,
+   LSM9DS1_MAG_OFFSET_Z_REG_L_M,
+   LSM9DS1_MAG_OFFSET_Z_REG_H_M,
+   LSM9DS1_MAG_RESERVED0,
+   LSM9DS1_MAG_WHO_AM_I,
+   LSM9DS1_MAG_RESERVED1,
+   LSM9DS1_MAG_CTRL_REG1_M,
+   LSM9DS1_MAG_CTRL_REG2_M,
+   LSM9DS1_MAG_CTRL_REG3_M,
+   LSM9DS1_MAG_CTRL_REG4_M,
+   LSM9DS1_MAG_CTRL_REG5_M,
+   LSM9DS1_MAG_RESERVED2,
+   LSM9DS1_MAG_STATUS_REG_M,
+   LSM9DS1_MAG_OUT_X_L_M,
+   LSM9DS1_MAG_OUT_X_H_M,
+   LSM9DS1_MAG_OUT_Y_L_M,
+   LSM9DS1_MAG_OUT_Y_H_M,
+   LSM9DS1_MAG_OUT_Z_L_M,
+   LSM9DS1_MAG_OUT_Z_H_M,
+   LSM9DS1_MAG_RESERVED3,
+   LSM9DS1_MAG_INT_CFG_M,
+   LSM9DS1_MAG_INT_SRC_M,
+   LSM9DS1_MAG_INT_THS_L_M,
+   LSM9DS1_MAG_INT_THS_H_M,
 } LSM9DS1_MagRegisters_e;
 
 typedef union
@@ -277,13 +277,13 @@ typedef union
 {
    struct
    {
-      uint8_t 4D_XL1   : 1; // 4D option enabled on interrupt
-      uint8_t LIR_XL1  : 1; // Latched interrupt
-      uint8_t RESERVED : 1;
-      uint8_t XEN_G    : 1; // Gyroscope's pitch axis
-      uint8_t YEN_G    : 1; // Gyroscope's roll axis
-      uint8_t ZEN_G    : 1; // Gyroscope's yaw axis
-      uint8_t RESERVED1: 1;
+      uint8_t _4D_XL1   : 1; // 4D option enabled on interrupt
+      uint8_t LIR_XL1   : 1; // Latched interrupt
+      uint8_t RESERVED  : 1;
+      uint8_t XEN_G     : 1; // Gyroscope's pitch axis
+      uint8_t YEN_G     : 1; // Gyroscope's roll axis
+      uint8_t ZEN_G     : 1; // Gyroscope's yaw axis
+      uint8_t RESERVED1 : 1;
    } b;
    uint8_t B;
 } LSM9DS1_CTRL_REG4_t;
@@ -362,7 +362,7 @@ typedef union
       uint8_t SW_RESET   : 1;
       uint8_t BLE        : 1; // Big/Little Endian data selection
       uint8_t IF_ADD_INC : 1; // Register address automatically incremented during a multiple byte access with a serial interface.
-      uint8_t SIM        : 1; // SPI serial interface mode selection
+      uint8_t _SIM_      : 1; // SPI serial interface mode selection
       uint8_t PP_OD      : 1; // Push-pull/open-drain selection on the INT1/2_A/G pin
       uint8_t H_LACTIVE  : 1; // Interrupt activation level
       uint8_t BDU        : 1; // Block data update
@@ -449,14 +449,14 @@ typedef union
 {
    struct
    {
-      XLIE_G : 1; // Interrupt enable on gyroscope's pitch X axis low event
-      XHIE_G : 1; //             ""                               high ""
-      YLIE_G : 1; //             ""                        Y axis low  ""
-      YHIE_G : 1; //             ""                               high ""
-      ZLIE_G : 1; //             ""                        Z axis low  ""
-      ZHIE_G : 1; //             ""                               high ""
-      LIR_G  : 1; // Latch gyroscope interrupt request
-      AOI_G  : 1; // AND/OR combination of gyroscope's interrupt events
+      uint8_t XLIE_G : 1; // Interrupt enable on gyroscope's pitch X axis low event
+      uint8_t XHIE_G : 1; //             ""                               high ""
+      uint8_t YLIE_G : 1; //             ""                        Y axis low  ""
+      uint8_t YHIE_G : 1; //             ""                               high ""
+      uint8_t ZLIE_G : 1; //             ""                        Z axis low  ""
+      uint8_t ZHIE_G : 1; //             ""                               high ""
+      uint8_t LIR_G  : 1; // Latch gyroscope interrupt request
+      uint8_t AOI_G  : 1; // AND/OR combination of gyroscope's interrupt events
    } b;
    uint8_t B;
 } LSM9DS1_INT_GEN_CFG_G_t;
@@ -560,7 +560,7 @@ typedef union
    struct
    {
       uint8_t MD          : 2; // Operating mode selection
-      uint8_t SIM         : 1; // SPI Serial Interface mode selection
+      uint8_t _SIM_       : 1; // SPI Serial Interface mode selection
       uint8_t RESERVED0   : 2;
       uint8_t LP          : 1; // Low poer mode configuartion.
       uint8_t RESERVED1   : 1;
@@ -620,13 +620,13 @@ typedef union
 {
    struct
    {
-      IEN      : 1; // Interrupt enable on INT_M pin
-      IEL      : 1; // Latch interrupt request
-      IEA      : 1; // Intertupt active configuration on INT_MAG
-      RESERVED : 2;
-      ZIEN     : 1; // Enable interrupt generation on Z-axis
-      YIEN     : 1; //              ""                Y-axis
-      XIEN     : 1; //              ""                X-axis
+      uint8_t IEN      : 1; // Interrupt enable on INT_M pin
+      uint8_t IEL      : 1; // Latch interrupt request
+      uint8_t IEA      : 1; // Intertupt active configuration on INT_MAG
+      uint8_t RESERVED : 2;
+      uint8_t ZIEN     : 1; // Enable interrupt generation on Z-axis
+      uint8_t YIEN     : 1; //              ""                Y-axis
+      uint8_t XIEN     : 1; //              ""                X-axis
    } b;
    uint8_t B;
 } LSM9DS1_INT_CFG_M_t;
@@ -635,14 +635,14 @@ typedef union
 {
    struct
    {
-      INT_  : 1; // Interrupt event occorred
-      MROI  : 1; // Internal measurement range overflow on magnetic value
-      NTH_Z : 1; // Value on Z-axis exceeds the threshold on the negative side
-      NTH_Y : 1; //    ""    Y-axis                  ""
-      NTH_X : 1; //    ""    X-axis                  ""
-      PTH_Z : 1; //    ""    Z-axis                  ""          posistive side
-      PTH_X : 1; //    ""    Y-axis                  ""
-      PTH_Y : 1; //    ""    X-axis                  ""
+      uint8_t INT_  : 1; // Interrupt event occorred
+      uint8_t MROI  : 1; // Internal measurement range overflow on magnetic value
+      uint8_t NTH_Z : 1; // Value on Z-axis exceeds the threshold on the negative side
+      uint8_t NTH_Y : 1; //    ""    Y-axis                  ""
+      uint8_t NTH_X : 1; //    ""    X-axis                  ""
+      uint8_t PTH_Z : 1; //    ""    Z-axis                  ""          posistive side
+      uint8_t PTH_X : 1; //    ""    Y-axis                  ""
+      uint8_t PTH_Y : 1; //    ""    X-axis                  ""
    } b;
    uint8_t B;
 } LSM9DS1_INT_SRC_M_t;
