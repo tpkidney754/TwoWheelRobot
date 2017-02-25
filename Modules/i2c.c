@@ -40,21 +40,48 @@ I2C_Error I2C_SendData( uint8_t * data, uint8_t numBytes, uint8_t address )
 {
    // Start with blocking, then move to interrupt driven.
    // Write: control register 1 to enable TX
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK )
    // Write: Address with LSB = 0
+   I2C0_D = address;
    // Wait for transfer complete flag
-   // Write to transfer complete flag to clear it.
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
    // Start loop to begin transmission of the data
-   // Write to data register
-   // Wait for compeltion flag
-   // Write to completion flag
+
+   // ****************BLOCKING PORTIONS*******************
+   for( size_t i = 0; i < numBytes; i++ )
+   {
+      // Write to data register
+      I2C0_D = data[ i ];
+      // Wait for compeltion flag
+      WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
+   }
+
+   return I2C_NoError;
 }
 
-I2C_Error I2C_ReadData( uint8_t * data, uint8_t address )
+I2C_Error I2C_ReadData( uint8_t * data, uint8_t numBytes, uint8_t address )
 {
    // Write address with LSb = 0
-   // Wait for tranfer complete flag
-   // Write to transfer complete flag to clear it.
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK )
+   // Write: Address with LSB = 0
+   I2C0_D = address;
+   // Wait for transfer complete flag
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
    // Write address with LSb = 1
+   I2C0_D = address;
+   // Wait for transfer complete flag
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
    // Write control register to switch to RX
+   CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TX_MASK )
+   // ****************BLOCKING PORTIONS*******************
+   for( size_t i = 0; i < numBytes; i++ )
+   {
+      // Wait for compeltion flag
+      WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
+      // Read to data register
+      data[ i ] = I2C0_D;
 
+   }
+
+   return I2C_NoError;
 }
