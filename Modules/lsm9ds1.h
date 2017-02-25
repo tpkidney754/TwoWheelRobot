@@ -9,9 +9,10 @@
 #define LSM9DS1_I2C_SDA_SETUP_NS         250
 #define LSM9DS1_I2C_SDA_FAST_SETUP_NS    100F
 
-#define LSM9DS1_ACCELGYRO_ADDR           0xD6
+#define LSM9DS1_ACCELGYRO_ADDR           0xD6 // Real address is 0x68. Since the register requires shifting up by one, it's done in the macro
+                                              // Therefore 0x68 << 1 = 0xD6
 
-#define LSM9DS1_MAG_ADDR                 0x38
+#define LSM9DS1_MAG_ADDR                 0x3C // Real address is 0x1E, >> 1 = 0x3C
 
 // Bus clock is up to 24 Mhz
 // OUTDIV4 = 1, therefore the divider is 2. However, I need to make this flexible.
@@ -176,8 +177,8 @@ typedef union
       uint8_t INT2_FTH       : 1; // FIFO Threshold
       uint8_t INT2_OVR       : 1; // Overrun interrupt
       uint8_t INT2_FSS5      : 1; // FSS5 interrupt enable
-      uint8_t RESERVED       : 1; // 
-      uint8_t INT2_INACT     : 1; // Inactivity interrupt output signal 
+      uint8_t RESERVED       : 1; //
+      uint8_t INT2_INACT     : 1; // Inactivity interrupt output signal
    } b;
    uint8_t B;
 } LSM9DS1_INT2_CTRL_t; //  interrupts on INT2_A/G pin
@@ -211,7 +212,7 @@ typedef union
    {
       uint8_t OUT_SEL  : 2; // Out selection configuration
       uint8_t INT_SEL  : 2; // INT selection configuration
-      uint8_t RESERVED : 4; 
+      uint8_t RESERVED : 4;
    } b;
    uint8_t B;
 } LSM9DS1_CTRL_REG2_G; // Angular rate sensor control register 2.
@@ -270,7 +271,7 @@ typedef union
       uint8_t IG_XL       : 1; // Acceleromter interrupt output signal
    } b;
    uint8_t B;
-} LSM9DS1_STATUS_REG_t; 
+} LSM9DS1_STATUS_REG_t;
 
 typedef union
 {
@@ -278,9 +279,9 @@ typedef union
    {
       uint8_t 4D_XL1   : 1; // 4D option enabled on interrupt
       uint8_t LIR_XL1  : 1; // Latched interrupt
-      uint8_t RESERVED : 1; 
+      uint8_t RESERVED : 1;
       uint8_t XEN_G    : 1; // Gyroscope's pitch axis
-      uint8_t YEN_G    : 1; // Gyroscope's roll axis 
+      uint8_t YEN_G    : 1; // Gyroscope's roll axis
       uint8_t ZEN_G    : 1; // Gyroscope's yaw axis
       uint8_t RESERVED1: 1;
    } b;
@@ -352,7 +353,7 @@ typedef union
       uint8_t HR        : 1; // High resolution mode for accelerometer enable.
    } b;
    uint8_t B;
-} LSM9DS1_CTRL_REG7_XL_t; 
+} LSM9DS1_CTRL_REG7_XL_t;
 
 typedef union
 {
@@ -365,7 +366,7 @@ typedef union
       uint8_t PP_OD      : 1; // Push-pull/open-drain selection on the INT1/2_A/G pin
       uint8_t H_LACTIVE  : 1; // Interrupt activation level
       uint8_t BDU        : 1; // Block data update
-      uint8_t BOOT       : 1; // Reboot memory content 
+      uint8_t BOOT       : 1; // Reboot memory content
    } b;
    uint8_t B;
 } LSM9DS1_CTRL_REG8_t;
@@ -439,7 +440,7 @@ typedef union
    {
       uint8_t FSS  : 6; // Number of unread samples stored into FIFO
       uint8_t OVRN : 1; // FIFO Overrun status
-      uint8_t FTH  : 1; // FIFO Threshold status 
+      uint8_t FTH  : 1; // FIFO Threshold status
    } b;
    uint8_t B;
 } LSM9DS1_FIFO_SRC_t;
@@ -475,7 +476,7 @@ typedef union
    struct
    {
       uint16_t THS_G_Y   : 15; // Angular rate sensor interrupt threshold on pitch X
-      uint16_t RESERVED  : 1; 
+      uint16_t RESERVED  : 1;
    } b;
    uint16_t W;
 } LSM9DS1_INT_GEN_THS_Y_G_t;
@@ -485,7 +486,7 @@ typedef union
    struct
    {
       uint16_t THS_G_Z  : 15; // Angular rate sensor interrupt threshold on pitch X
-      uint16_t RESERVED : 1;  
+      uint16_t RESERVED : 1;
    } b;
    uint16_t W;
 } LSM9DS1_INT_GEN_THS_Z_G_t;
@@ -623,7 +624,7 @@ typedef union
       IEL      : 1; // Latch interrupt request
       IEA      : 1; // Intertupt active configuration on INT_MAG
       RESERVED : 2;
-      ZIEN     : 1; // Enable interrupt generation on Z-axis 
+      ZIEN     : 1; // Enable interrupt generation on Z-axis
       YIEN     : 1; //              ""                Y-axis
       XIEN     : 1; //              ""                X-axis
    } b;
@@ -637,7 +638,7 @@ typedef union
       INT_  : 1; // Interrupt event occorred
       MROI  : 1; // Internal measurement range overflow on magnetic value
       NTH_Z : 1; // Value on Z-axis exceeds the threshold on the negative side
-      NTH_Y : 1; //    ""    Y-axis                  "" 
+      NTH_Y : 1; //    ""    Y-axis                  ""
       NTH_X : 1; //    ""    X-axis                  ""
       PTH_Z : 1; //    ""    Z-axis                  ""          posistive side
       PTH_X : 1; //    ""    Y-axis                  ""
