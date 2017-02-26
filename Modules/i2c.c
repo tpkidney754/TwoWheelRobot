@@ -33,7 +33,7 @@ I2C_Error I2C_Init( uint8_t I2C_Channel, uint8_t I2C_DesiredSpeedkHz )
    SET_BIT_IN_REG( I2C0_F, I2C_F_MULT( 0 ) | I2C_F_ICR( ICR_FOR_100khz_24MhzBus ) );
    // Write control register 1 to enable the i2c module and interrupts
    // Initialize ram varaibles ( IICEN = 1 and IICIE = 1 ) for transmit data
-   SET_BIT_IN_REG( I2C0_C1, I2C_C1_IICEN_MASK | I2C_C1_MST_MASK );
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_IICEN_MASK );
 }
 
 I2C_Error I2C_SendData( uint8_t * data, uint8_t numBytes, uint8_t address )
@@ -61,30 +61,44 @@ I2C_Error I2C_SendData( uint8_t * data, uint8_t numBytes, uint8_t address )
 
 I2C_Error I2C_ReadData( uint8_t reg, uint8_t * data, uint8_t numBytes, uint8_t address )
 {
-   // Write address with LSb = 0
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
-   // Write: Address with LSB = 0
+   // Set to Master mode to generate start signal
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
+   // Write address with LSb = 0
    I2C0_D = address;
    // Wait for transfer complete flag
-   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+   SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
    // Write register value to read
    I2C0_D = reg;
-   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+   SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   // Send repeat start
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_RSTA_MASK );
    // Write address with LSb = 1
    I2C0_D = address | 1;
    // Wait for transfer complete flag
-   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+   SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
    // Write control register to switch to RX
    CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
+   *data = I2C0_D;
+   CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TXAK_MASK );
    // ****************BLOCKING PORTIONS*******************
-   for( size_t i = 0; i < numBytes; i++ )
-   {
+   //for( size_t i = 0; i < numBytes; i++ )
+   //{
       // Wait for compeltion flag
-      WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
+      WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+      SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+      CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
       // Read to data register
-      data[ i ] = I2C0_D;
-
-   }
+      *data = I2C0_D;
+      //WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+      SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+      // set to Slave mode to generate a stop signal
+      //WAIT_FOR_BIT_SET( I2C0_FLT & I2C_FLT_STOPF_MASK );
+      //SET_BIT_IN_REG( I2C0_FLT, I2C_FLT_STOPF_MASK );
+   //}
 
    return I2C_NoError;
 }
