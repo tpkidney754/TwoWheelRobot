@@ -11,6 +11,7 @@ int main()
    UartSetup( 0, 57600, 0 );
 #ifdef FRDM
    LEDSetup();
+   I2C_Init( 0, 0 );
    // Will be using the ADC later on, just not now.
    //ADC_Init( ADC_CHANNEL );
 #endif
@@ -33,10 +34,11 @@ int main()
          length = UART0_RXBuffer->numItems;
          for( size_t i = 0; i < length; i++ )
          {
-            CBufferRemove( UART0_RXBuffer, buffer, DMACH_UART0TX );
+            CBufferRemove( UART0_RXBuffer, &buffer[ i ], DMACH_UART0TX );
          }
 
          ParseDiag( buffer );
+         parseDiag = 0;
       }
 
    }

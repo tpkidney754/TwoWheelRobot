@@ -22,15 +22,16 @@ void LOG0( uint8_t * data )
 {
 #ifdef FRDM
    uint32_t length = MyStrLen( data );
+
    for( uint32_t i = 0; i < length; i++ )
    {
-
       if( CBufferAdd( UART0_TXBuffer, ( data + i ), DMACH_UART0TX ) == BUFFER_FULL )
       {
          while( IsBufferFull( UART0_TXBuffer ) == BUFFER_FULL );
          CBufferAdd( UART0_TXBuffer, ( data + i ), DMACH_UART0TX );
       }
    }
+
    SET_BIT_IN_REG( UART0_C2, UART0_C2_TIE_MASK );
 #else
    printf( "%s", data );
