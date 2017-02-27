@@ -43,11 +43,25 @@ void ParseDiag( uint8_t * buffer )
          i++;
          uint8_t buffer0[ 40 ];
          uint8_t reg = MyAtoi( commands[ i ] );
-         uint8_t returnedValue;
-         LOG0( buffer0 );
-         I2C_ReadData( reg, &returnedValue, 1, LSM9DS1_ACCELGYRO_ADDR );
-         sprintf( buffer0, "Returned value from register 0x%X is 0x%x\n", reg, returnedValue );
-         LOG0( buffer0 );
+         i++;
+         uint8_t numBytes = MyAtoi( commands[ i ] );
+         uint8_t returnedValue[ 20 ];
+
+         if(  numBytes == 1 )
+         {
+            I2C_ReadByte( reg, returnedValue, LSM9DS1_ACCELGYRO_ADDR );
+            sprintf( buffer0, "Returned value from register 0x%X is 0x%x\n", reg, returnedValue[ 0 ] );
+            LOG0( buffer0 );
+         }
+         else
+         {
+            I2C_ReadData( reg, returnedValue, numBytes, LSM9DS1_ACCELGYRO_ADDR );
+            for( uint8_t j = 0; j < numBytes; j++ )
+            {
+               sprintf( buffer0, "Returned value from register 0x%X is 0x%x\n", reg + j, returnedValue[ j ] );
+               LOG0( buffer0 );
+            }
+         }
       }
 
    }
