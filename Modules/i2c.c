@@ -69,10 +69,22 @@ I2C_Error I2C_ReadData( uint8_t reg, uint8_t * data, uint8_t numBytes, uint8_t a
    // Wait for transfer complete flag
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   if( I2C0_S & I2C_S_RXAK_MASK )
+   {
+      LOG0( "Did not receive ack from slave\n" );
+      CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
+      return I2C_NoAck;
+   }
    // Write register value to read
    I2C0_D = reg;
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   if( I2C0_S & I2C_S_RXAK_MASK )
+   {
+      LOG0( "Did not receive ack from slave\n" );
+      CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
+      return I2C_NoAck;
+   }
    // Send repeat start
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_RSTA_MASK );
    // Write address with LSb = 1
@@ -80,16 +92,23 @@ I2C_Error I2C_ReadData( uint8_t reg, uint8_t * data, uint8_t numBytes, uint8_t a
    // Wait for transfer complete flag
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   if( I2C0_S & I2C_S_RXAK_MASK )
+   {
+      LOG0( "Did not receive ack from slave\n" );
+      CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
+      return I2C_NoAck;
+   }
    // Write control register to switch to RX
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_TXAK_MASK );
    CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
    *data = I2C0_D;
-   CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TXAK_MASK );
    // ****************BLOCKING PORTIONS*******************
    //for( size_t i = 0; i < numBytes; i++ )
    //{
       // Wait for compeltion flag
       WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
       SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+      //SET_BIT_IN_REG( I2C0_C1, I2C_C1_TXAK_MASK );
       CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
       // Read to data register
       *data = I2C0_D;

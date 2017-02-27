@@ -7,6 +7,7 @@ typedef enum
 {
    I2C_NoError = 0,
    I2C_ChoosenFreqTooHigh,
+   I2C_NoAck,
    I2C_GeneralError,
 } I2C_Error;
 
