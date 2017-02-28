@@ -38,11 +38,24 @@ void ParseDiag( uint8_t * buffer )
       {
          i++;
          uint8_t buffer0[ 40 ];
+         uint8_t data[ 2 ];
          uint8_t reg = MyAtoi( commands[ i ] );
          i++;
-         uint8_t data = MyAtoi( commands[ i ] );
-         I2C_SendByte( reg, &data, LSM9DS1_ACCELGYRO_ADDR );
-         sprintf( buffer0, "Wrote 0x%X to reg 0x%X\n", data, reg );
+         uint8_t numBytes = MyAtoi( commands[ i ] );
+         i++;
+         for( uint8_t j = 0; j < numBytes; j++ )
+         {
+            numBytes = MyAtoi( commands[ i ] );
+         }
+         if( numBytes > 1 )
+         {
+            I2C_SendData( reg, numBytes, data, LSM9DS1_ACCELGYRO_ADDR );
+         }
+         else
+         {
+            I2C_SendByte( reg, data, LSM9DS1_ACCELGYRO_ADDR );
+         }
+         sprintf( buffer0, "Wrote to reg 0x%X\n", reg );
          LOG0( buffer0 );
       }
    }

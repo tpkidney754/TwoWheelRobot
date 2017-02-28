@@ -24,8 +24,9 @@ typedef enum
 #define ICR_FOR_100khz_24MhzBus  0x1F
 
 I2C_Error I2C_Init( uint8_t I2C_Channel, uint8_t I2C_DesiredSpeedkHz );
-I2C_Error I2C_SendByte( uint8_t reg, uint8_t * data, uint8_t address );
-I2C_Error I2C_ReadByte( uint8_t reg, uint8_t * data, uint8_t address );
-I2C_Error I2C_ReadData( uint8_t reg, uint8_t * data, uint8_t numBytes, uint8_t address );
+I2C_Error I2C_SendByte( uint8_t subAddress, uint8_t * data, uint8_t address );
+I2C_Error I2C_SendData( uint8_t subAddress, uint8_t numBytes, uint8_t * data, uint8_t address );
+I2C_Error I2C_ReadByte( uint8_t subAddress, uint8_t * data, uint8_t address );
+I2C_Error I2C_ReadData( uint8_t subAddress, uint8_t * data, uint8_t numBytes, uint8_t address );
 
 #endif //__I2C__

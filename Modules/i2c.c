@@ -36,7 +36,7 @@ I2C_Error I2C_Init( uint8_t I2C_Channel, uint8_t I2C_DesiredSpeedkHz )
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_IICEN_MASK );
 }
 
-I2C_Error I2C_SendByte( uint8_t reg, uint8_t * data, uint8_t address )
+I2C_Error I2C_SendByte( uint8_t subAddress, uint8_t * data, uint8_t address )
 {
    // Start with blocking, then move to interrupt driven.
    // Write: control register 1 to enable TX
@@ -48,7 +48,7 @@ I2C_Error I2C_SendByte( uint8_t reg, uint8_t * data, uint8_t address )
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
    // register
-   I2C0_D = reg;
+   I2C0_D = subAddress;
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
    // data
@@ -61,7 +61,35 @@ I2C_Error I2C_SendByte( uint8_t reg, uint8_t * data, uint8_t address )
    return I2C_NoError;
 }
 
-I2C_Error I2C_ReadByte( uint8_t reg, uint8_t * data, uint8_t address )
+I2C_Error I2C_SendData( uint8_t subAddress, uint8_t numBytes, uint8_t * data, uint8_t address )
+{
+   // Start with blocking, then move to interrupt driven.
+   // Write: control register 1 to enable TX
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
+   // Set Master bit to send START bit
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
+   // address
+   I2C0_D = address;
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+   SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   // register
+   I2C0_D = subAddress | 0x80;
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+   SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   // data
+   for( uint8_t i = 0; i < numBytes; i++ )
+   {
+      I2C0_D = data[ i ];
+      WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+      SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   }
+   // Clear Master bit to send STOP bit
+   CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
+
+   return I2C_NoError;
+}
+
+I2C_Error I2C_ReadByte( uint8_t subAddress, uint8_t * data, uint8_t address )
 {
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
    // Set to Master mode to generate start signal
@@ -71,22 +99,22 @@ I2C_Error I2C_ReadByte( uint8_t reg, uint8_t * data, uint8_t address )
    // Wait for transfer complete flag
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
-   if( I2C0_S & I2C_S_RXAK_MASK )
+   /*if( I2C0_S & I2C_S_RXAK_MASK )
    {
       LOG0( "Did not receive ack from slave\n" );
       CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
       return I2C_NoAck;
-   }
+   }*/
    // Write register value to read
-   I2C0_D = reg;
+   I2C0_D = subAddress;
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
-   if( I2C0_S & I2C_S_RXAK_MASK )
+   /*if( I2C0_S & I2C_S_RXAK_MASK )
    {
       LOG0( "Did not receive ack from slave\n" );
       CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
       return I2C_NoAck;
-   }
+   }*/
    // Send repeat start
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_RSTA_MASK );
    // Write address with LSb = 1
@@ -94,12 +122,12 @@ I2C_Error I2C_ReadByte( uint8_t reg, uint8_t * data, uint8_t address )
    // Wait for transfer complete flag
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
-   if( I2C0_S & I2C_S_RXAK_MASK )
+   /*if( I2C0_S & I2C_S_RXAK_MASK )
    {
       LOG0( "Did not receive ack from slave\n" );
       CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
       return I2C_NoAck;
-   }
+   }*/
    // Set 1 to TXAK to send a NOACK after the real byte is read.
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_TXAK_MASK );
    // Write control register to switch to RX
@@ -116,7 +144,7 @@ I2C_Error I2C_ReadByte( uint8_t reg, uint8_t * data, uint8_t address )
 
 }
 
-I2C_Error I2C_ReadData( uint8_t reg, uint8_t * data, uint8_t numBytes, uint8_t address )
+I2C_Error I2C_ReadData( uint8_t subAddress, uint8_t * data, uint8_t numBytes, uint8_t address )
 {
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
    // Set to Master mode to generate start signal
@@ -126,22 +154,22 @@ I2C_Error I2C_ReadData( uint8_t reg, uint8_t * data, uint8_t numBytes, uint8_t a
    // Wait for transfer complete flag
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
-   if( I2C0_S & I2C_S_RXAK_MASK )
+   /*if( I2C0_S & I2C_S_RXAK_MASK )
    {
       LOG0( "Did not receive ack from slave\n" );
       CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
       return I2C_NoAck;
-   }
+   }*/
    // Write register value to read and set MSb to tell Slave that multiple bytes are to be read.
-   I2C0_D = reg | 0x80;
+   I2C0_D = subAddress | 0x80;
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
-   if( I2C0_S & I2C_S_RXAK_MASK )
+   /*if( I2C0_S & I2C_S_RXAK_MASK )
    {
       LOG0( "Did not receive ack from slave\n" );
       CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
       return I2C_NoAck;
-   }
+   }*/
    // Send repeat start
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_RSTA_MASK );
    // Write address with LSb = 1
@@ -149,12 +177,12 @@ I2C_Error I2C_ReadData( uint8_t reg, uint8_t * data, uint8_t numBytes, uint8_t a
    // Wait for transfer complete flag
    WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
    SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
-   if( I2C0_S & I2C_S_RXAK_MASK )
+   /*if( I2C0_S & I2C_S_RXAK_MASK )
    {
       LOG0( "Did not receive ack from slave\n" );
       CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
       return I2C_NoAck;
-   }
+   }*/
    // Write control register to switch to RX
    CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TXAK_MASK );
    CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_TX_MASK );

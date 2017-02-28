@@ -14,6 +14,7 @@
 
 #define LSM9DS1_MAG_ADDR                 0x3C // Real address is 0x1E, >> 1 = 0x3C
 
+
 // Bus clock is up to 24 Mhz
 // OUTDIV4 = 1, therefore the divider is 2. However, I need to make this flexible.
 // SDA Max hold time is 3.45 us.
