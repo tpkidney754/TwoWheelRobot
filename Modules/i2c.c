@@ -36,25 +36,27 @@ I2C_Error I2C_Init( uint8_t I2C_Channel, uint8_t I2C_DesiredSpeedkHz )
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_IICEN_MASK );
 }
 
-I2C_Error I2C_SendData( uint8_t * data, uint8_t numBytes, uint8_t address )
+I2C_Error I2C_SendByte( uint8_t reg, uint8_t * data, uint8_t address )
 {
    // Start with blocking, then move to interrupt driven.
    // Write: control register 1 to enable TX
    SET_BIT_IN_REG( I2C0_C1, I2C_C1_TX_MASK );
-   // Write: Address with LSB = 0
+   // Set Master bit to send START bit
+   SET_BIT_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
+   // address
    I2C0_D = address;
-   // Wait for transfer complete flag
-   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
-   // Start loop to begin transmission of the data
-
-   // ****************BLOCKING PORTIONS*******************
-   for( size_t i = 0; i < numBytes; i++ )
-   {
-      // Write to data register
-      I2C0_D = data[ i ];
-      // Wait for compeltion flag
-      WAIT_FOR_BIT_SET( I2C0_S & I2C_S_TCF_MASK );
-   }
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+   SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   // register
+   I2C0_D = reg;
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+   SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   // data
+   I2C0_D = *data;
+   WAIT_FOR_BIT_SET( I2C0_S & I2C_S_IICIF_MASK );
+   SET_BIT_IN_REG( I2C0_S, I2C_S_IICIF_MASK);
+   // Clear Master bit to send STOP bit
+   CLEAR_BITS_IN_REG( I2C0_C1, I2C_C1_MST_MASK );
 
    return I2C_NoError;
 }

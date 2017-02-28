@@ -31,9 +31,20 @@ void ParseDiag( uint8_t * buffer )
 
    i = 0;
 #ifdef FRDM
-   if( strstr( commands[ i ], "set" ) )
+   if( strstr( commands[ i ], "write" ) )
    {
       i++;
+      if( strstr( commands[ i ], "reg" ) )
+      {
+         i++;
+         uint8_t buffer0[ 40 ];
+         uint8_t reg = MyAtoi( commands[ i ] );
+         i++;
+         uint8_t data = MyAtoi( commands[ i ] );
+         I2C_SendByte( reg, &data, LSM9DS1_ACCELGYRO_ADDR );
+         sprintf( buffer0, "Wrote 0x%X to reg 0x%X\n", data, reg );
+         LOG0( buffer0 );
+      }
    }
    else if( strstr( commands[ i ], "read" ) )
    {
