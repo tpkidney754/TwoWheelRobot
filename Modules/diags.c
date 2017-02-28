@@ -13,7 +13,7 @@
 void ParseDiag( uint8_t * buffer )
 {
    // Support up to four commands with 10 characters each.
-   uint8_t commands[ 4 ][ 10 ];
+   uint8_t commands[ 6 ][ 10 ];
    size_t length;
    size_t i = 0;
    uint8_t * currentCommand;

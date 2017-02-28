@@ -64,13 +64,7 @@ int32_t MyAtoi( uint8_t * str )
    uint32_t length = 0;
    uint32_t i = 0;
    uint32_t temp = 0;
-
-   if( *str == '-' )
-   {
-      negative = 1;
-      str++;
-   }
-
+   // 0x24
    start = str;
 
    while( *str++ )
@@ -78,8 +72,38 @@ int32_t MyAtoi( uint8_t * str )
       length++;
    }
 
-   i = length-1;
+   i = length - 1;
    str = start;
+
+   if( strstr( str, "0x" ) )
+   {
+      length -= 2;
+      i -= 2;
+      str += 2;
+      while( ( temp = *str++ ) != '\0' )
+      {
+         if( temp >= 0x61 )
+         {
+            temp -= 0x20;
+         }
+         temp -= ( temp >= 'A' ) ? ASCIILETTERBASE : ASCIINUMBASE;
+         for( int j = 0; j < i; j++ )
+         {
+            temp *= 16;
+         }
+         i--;
+         num += temp;
+      }
+
+      return num;
+   }
+
+   if( *str == '-' )
+   {
+      negative = 1;
+      str++;
+   }
+
    while( (temp = *str++) != '\0' )
    {
       temp -= ASCIINUMBASE;
